@@ -33,7 +33,7 @@ export default function DashboardPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ background: '#fafafa', color: '#171717' }}>
       <TopBar
         activeEnvironmentId={activeEnvironmentId}
         onEnvironmentChange={setActiveEnvironmentId}
