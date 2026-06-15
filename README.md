@@ -14,7 +14,7 @@
 
 HTTPilot is a full-stack API testing web application that lets developers send HTTP requests, inspect responses, manage saved request collections, and configure environment variables all from a clean, developer-focused UI.
 
-Built as a portfolio project to demonstrate full-stack engineering across authentication, proxy architecture, real-time database interactions, and modern UI design.
+Built to demonstrate full-stack engineering across authentication, proxy architecture, real-time database interactions, and modern UI design.
 
 ---
 
