@@ -45,6 +45,7 @@ export default function DashboardPage() {
         <Sidebar onSelectRequest={setActiveRequest} />
         <main className="flex-1 flex flex-col overflow-hidden">
           <RequestBuilder
+            key={activeRequest?.id ?? "new"}
             onResponse={setResponse}
             activeEnvironmentId={activeEnvironmentId}
             activeRequest={activeRequest}

@@ -25,44 +25,44 @@ const statusColor = (code: number) => {
 
 const styles = {
   sidebar: {
-    background: '#ffffff',
-    borderRight: '1px solid #ebebeb',
+    background: '#111111',
+    borderRight: '1px solid #1f1f1f',
     fontFamily: 'Geist, Inter, system-ui, -apple-system, sans-serif',
   },
   tab: (active: boolean) => ({
-    color: active ? '#171717' : '#888888',
+    color: active ? '#ededed' : '#555555',
     fontSize: '12px',
     fontWeight: active ? 500 : 400,
     letterSpacing: '-0.28px',
     background: 'transparent',
-    borderBottom: active ? '1px solid #171717' : '1px solid transparent',
+    borderBottom: active ? '1px solid #ededed' : '1px solid transparent',
     transition: 'all 0.15s',
   }),
   sectionLabel: {
     fontSize: '11px',
     fontWeight: 500,
     letterSpacing: '0.06em',
-    color: '#888888',
+    color: '#444444',
     fontFamily: 'Geist Mono, ui-monospace, monospace',
     textTransform: 'uppercase' as const,
   },
   collectionRow: {
     fontSize: '13px',
     fontWeight: 500,
-    color: '#171717',
+    color: '#ededed',
     letterSpacing: '-0.28px',
   },
   requestRow: {
     fontSize: '12px',
-    color: '#4d4d4d',
+    color: '#888888',
     letterSpacing: '-0.28px',
   },
   input: {
-    background: '#ffffff',
-    border: '1px solid #ebebeb',
+    background: '#1a1a1a',
+    border: '1px solid #2a2a2a',
     borderRadius: '6px',
     fontSize: '13px',
-    color: '#171717',
+    color: '#ededed',
     padding: '0 10px',
     height: '32px',
     outline: 'none',
@@ -70,8 +70,8 @@ const styles = {
     fontFamily: 'Geist, Inter, system-ui, sans-serif',
   },
   addBtn: {
-    background: '#171717',
-    color: '#ffffff',
+    background: '#ededed',
+    color: '#111111',
     border: 'none',
     borderRadius: '6px',
     fontSize: '12px',
@@ -82,12 +82,12 @@ const styles = {
     whiteSpace: 'nowrap' as const,
   },
   emptyState: {
-    background: '#fafafa',
-    border: '1px dashed #ebebeb',
+    background: '#161616',
+    border: '1px dashed #2a2a2a',
     borderRadius: '8px',
   },
   historyRow: {
-    borderBottom: '1px solid #ebebeb',
+    borderBottom: '1px solid #1a1a1a',
     cursor: 'pointer',
     transition: 'background 0.1s',
   },
@@ -118,8 +118,16 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
     setHistory(data);
   }, [getToken]);
 
-  useEffect(() => { void loadCollections(); }, [loadCollections]);
-  useEffect(() => { if (tab === 'history') void loadHistory(); }, [tab, loadHistory]);
+  useEffect(() => {
+    const load = async () => { await loadCollections(); };
+    void load();
+  }, [loadCollections]);
+
+  useEffect(() => {
+    if (tab !== 'history') return;
+    const load = async () => { await loadHistory(); };
+    void load();
+  }, [tab, loadHistory]);
 
   const createCollection = async () => {
     if (!newCollectionName.trim()) return;
@@ -161,8 +169,8 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
       name: `${item.method} ${item.url}`,
       method: item.method,
       url: item.url,
-      headers: item.headers as Record<string, string>,
-      body: item.body,
+      headers: {},
+      body: undefined,
       collectionId: '',
     });
     setMobileOpen(false);
@@ -185,7 +193,7 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
 
       {/* Tab switcher */}
-      <div style={{ display: 'flex', borderBottom: '1px solid #ebebeb', flexShrink: 0 }}>
+      <div style={{ display: 'flex', borderBottom: '1px solid #1f1f1f', flexShrink: 0 }}>
         {(['collections', 'history'] as const).map((t) => (
           <button
             key={t}
@@ -211,15 +219,15 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
           {/* Header */}
           <div style={{
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '10px 12px', borderBottom: '1px solid #ebebeb', flexShrink: 0,
+            padding: '10px 12px', borderBottom: '1px solid #1f1f1f', flexShrink: 0,
           }}>
             <span style={styles.sectionLabel}>Collections</span>
             <button
               onClick={() => setAdding(!adding)}
               style={{
                 width: '20px', height: '20px', borderRadius: '6px',
-                border: '1px solid #ebebeb', background: adding ? '#171717' : '#ffffff',
-                color: adding ? '#ffffff' : '#171717',
+                border: '1px solid #2a2a2a', background: adding ? '#ededed' : '#1a1a1a',
+                color: adding ? '#111111' : '#ededed',
                 cursor: 'pointer', fontSize: '14px', fontWeight: 500,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 lineHeight: 1,
@@ -231,7 +239,7 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
           {adding && (
             <div style={{
               display: 'flex', gap: '6px', padding: '8px 12px',
-              borderBottom: '1px solid #ebebeb', background: '#fafafa', flexShrink: 0,
+              borderBottom: '1px solid #1f1f1f', background: '#161616', flexShrink: 0,
             }}>
               <input
                 autoFocus
@@ -243,8 +251,8 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
                 }}
                 placeholder="Collection name"
                 style={styles.input}
-                onFocus={e => (e.target.style.borderColor = '#171717')}
-                onBlur={e => (e.target.style.borderColor = '#ebebeb')}
+                onFocus={e => (e.target.style.borderColor = '#0070f3')}
+                onBlur={e => (e.target.style.borderColor = '#2a2a2a')}
               />
               <button onClick={() => void createCollection()} style={styles.addBtn}>Add</button>
             </div>
@@ -257,26 +265,26 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
                 <div style={{ ...styles.emptyState, padding: '20px', textAlign: 'center' }}>
                   <div style={{
                     width: '32px', height: '32px', borderRadius: '8px',
-                    background: '#f5f5f5', border: '1px solid #ebebeb',
+                    background: '#1a1a1a', border: '1px solid #2a2a2a',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     margin: '0 auto 10px',
                   }}>
-                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#888">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#444">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                         d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                     </svg>
                   </div>
-                  <p style={{ fontSize: '13px', color: '#4d4d4d', margin: '0 0 4px', fontWeight: 500 }}>
+                  <p style={{ fontSize: '13px', color: '#888', margin: '0 0 4px', fontWeight: 500 }}>
                     No collections
                   </p>
-                  <p style={{ fontSize: '12px', color: '#888', margin: '0 0 12px' }}>
+                  <p style={{ fontSize: '12px', color: '#444', margin: '0 0 12px' }}>
                     Save requests to organize your work
                   </p>
                   <button
                     onClick={() => setAdding(true)}
                     style={{
-                      fontSize: '12px', fontWeight: 500, color: '#171717',
-                      background: '#ffffff', border: '1px solid #ebebeb',
+                      fontSize: '12px', fontWeight: 500, color: '#ededed',
+                      background: '#1a1a1a', border: '1px solid #2a2a2a',
                       borderRadius: '100px', padding: '4px 12px', cursor: 'pointer',
                     }}
                   >Create collection</button>
@@ -289,17 +297,17 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
                   <div
                     className="group"
                     onClick={() => toggleExpand(col.id)}
-                    onMouseEnter={e => (e.currentTarget.style.background = '#fafafa')}
+                    onMouseEnter={e => (e.currentTarget.style.background = '#1a1a1a')}
                     onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                     style={{
                       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                       padding: '7px 12px', cursor: 'pointer',
-                      borderBottom: '1px solid #ebebeb', transition: 'background 0.1s',
+                      borderBottom: '1px solid #1f1f1f', transition: 'background 0.1s',
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', overflow: 'hidden' }}>
                       <svg
-                        width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="#888"
+                        width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="#444"
                         style={{
                           flexShrink: 0, transition: 'transform 0.15s',
                           transform: expanded[col.id] ? 'rotate(90deg)' : 'rotate(0deg)',
@@ -314,17 +322,17 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
                       <span style={{ ...styles.collectionRow, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {col.name}
                       </span>
-                      <span style={{ fontSize: '11px', color: '#888', flexShrink: 0 }}>
+                      <span style={{ fontSize: '11px', color: '#444', flexShrink: 0 }}>
                         {col.requests.length}
                       </span>
                     </div>
                     <button
                       onClick={(e) => { e.stopPropagation(); void deleteCollection(col.id); }}
                       onMouseEnter={e => (e.currentTarget.style.color = '#ee0000')}
-                      onMouseLeave={e => (e.currentTarget.style.color = '#a1a1a1')}
+                      onMouseLeave={e => (e.currentTarget.style.color = '#333')}
                       style={{
                         background: 'none', border: 'none', cursor: 'pointer',
-                        color: '#a1a1a1', padding: '2px', opacity: 0,
+                        color: '#333', padding: '2px', opacity: 0,
                         transition: 'color 0.1s',
                         display: 'flex', alignItems: 'center',
                       }}
@@ -344,7 +352,7 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
                       key={req.id}
                       onClick={() => handleSelectRequest(req)}
                       onMouseEnter={e => {
-                        (e.currentTarget as HTMLDivElement).style.background = '#fafafa';
+                        (e.currentTarget as HTMLDivElement).style.background = '#1a1a1a';
                         setHoveredId(req.id);
                       }}
                       onMouseLeave={e => {
@@ -354,14 +362,14 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
                       style={{
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                         paddingLeft: '28px', paddingRight: '12px', paddingTop: '5px', paddingBottom: '5px',
-                        cursor: 'pointer', borderBottom: '1px solid #f5f5f5', transition: 'background 0.1s',
+                        cursor: 'pointer', borderBottom: '1px solid #161616', transition: 'background 0.1s',
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
                         <span style={{
                           fontSize: '10px', fontWeight: 600, fontFamily: 'Geist Mono, monospace',
-                          color: methodColors[req.method] ?? '#888',
-                          background: `${methodColors[req.method]}15`,
+                          color: methodColors[req.method] ?? '#444',
+                          background: `${methodColors[req.method]}20`,
                           padding: '1px 5px', borderRadius: '4px', flexShrink: 0,
                         }}>
                           {req.method}
@@ -374,12 +382,12 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
                         onClick={(e) => { e.stopPropagation(); void deleteRequest(col.id, req.id); }}
                         style={{
                           background: 'none', border: 'none', cursor: 'pointer',
-                          color: '#a1a1a1', padding: '2px', flexShrink: 0,
+                          color: '#333', padding: '2px', flexShrink: 0,
                           opacity: hoveredId === req.id ? 1 : 0, transition: 'opacity 0.1s',
                           display: 'flex', alignItems: 'center',
                         }}
                         onMouseEnter={e => (e.currentTarget.style.color = '#ee0000')}
-                        onMouseLeave={e => (e.currentTarget.style.color = '#a1a1a1')}
+                        onMouseLeave={e => (e.currentTarget.style.color = '#333')}
                       >
                         <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -399,17 +407,17 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
           <div style={{
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '10px 12px', borderBottom: '1px solid #ebebeb', flexShrink: 0,
+            padding: '10px 12px', borderBottom: '1px solid #1f1f1f', flexShrink: 0,
           }}>
             <span style={styles.sectionLabel}>Recent — {history.length}</span>
             {history.length > 0 && (
               <button
                 onClick={() => void clearHistory()}
                 onMouseEnter={e => (e.currentTarget.style.color = '#ee0000')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#888')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#444')}
                 style={{
                   background: 'none', border: 'none', cursor: 'pointer',
-                  fontSize: '11px', color: '#888', fontFamily: 'Geist, Inter, sans-serif',
+                  fontSize: '11px', color: '#444', fontFamily: 'Geist, Inter, sans-serif',
                   transition: 'color 0.1s', padding: 0,
                 }}
               >Clear</button>
@@ -422,19 +430,19 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
                 <div style={{ ...styles.emptyState, padding: '20px', textAlign: 'center' }}>
                   <div style={{
                     width: '32px', height: '32px', borderRadius: '8px',
-                    background: '#f5f5f5', border: '1px solid #ebebeb',
+                    background: '#1a1a1a', border: '1px solid #2a2a2a',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     margin: '0 auto 10px',
                   }}>
-                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#888">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#444">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <p style={{ fontSize: '13px', color: '#4d4d4d', margin: '0 0 4px', fontWeight: 500 }}>
+                  <p style={{ fontSize: '13px', color: '#888', margin: '0 0 4px', fontWeight: 500 }}>
                     No history yet
                   </p>
-                  <p style={{ fontSize: '12px', color: '#888', margin: 0 }}>
+                  <p style={{ fontSize: '12px', color: '#444', margin: 0 }}>
                     Sent requests will appear here
                   </p>
                 </div>
@@ -444,21 +452,21 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
                 <div
                   key={item.id}
                   onClick={() => handleHistoryClick(item)}
-                  onMouseEnter={e => (e.currentTarget.style.background = '#fafafa')}
+                  onMouseEnter={e => (e.currentTarget.style.background = '#1a1a1a')}
                   onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                   style={{ ...styles.historyRow, display: 'flex', alignItems: 'center', gap: '8px', padding: '7px 12px' }}
                 >
                   <span style={{
                     fontSize: '10px', fontWeight: 600, fontFamily: 'Geist Mono, monospace',
-                    color: methodColors[item.method] ?? '#888',
-                    background: `${methodColors[item.method]}15`,
+                    color: methodColors[item.method] ?? '#444',
+                    background: `${methodColors[item.method]}20`,
                     padding: '1px 5px', borderRadius: '4px', flexShrink: 0,
                   }}>
                     {item.method}
                   </span>
 
                   <span style={{
-                    flex: 1, fontSize: '12px', color: '#4d4d4d',
+                    flex: 1, fontSize: '12px', color: '#888',
                     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                     letterSpacing: '-0.28px',
                   }}>
@@ -469,7 +477,7 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
                     <span style={{ fontSize: '11px', fontWeight: 600, color: statusColor(item.statusCode) }}>
                       {item.statusCode}
                     </span>
-                    <span style={{ fontSize: '10px', color: '#888', fontFamily: 'Geist Mono, monospace' }}>
+                    <span style={{ fontSize: '10px', color: '#444', fontFamily: 'Geist Mono, monospace' }}>
                       {formatTime(item.createdAt)}
                     </span>
                   </div>
@@ -487,14 +495,14 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
       {/* Mobile FAB */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="md:hidden"
+        className="md:hidden flex"
         style={{
           position: 'fixed', bottom: '20px', left: '20px', zIndex: 50,
           width: '44px', height: '44px', borderRadius: '100px',
-          background: '#171717', color: '#ffffff', border: 'none',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: '#0070f3', color: '#ffffff', border: 'none', 
+          alignItems: 'center', justifyContent: 'center',
           cursor: 'pointer',
-          boxShadow: '0px 4px 8px rgba(0,0,0,0.12), 0px 1px 2px rgba(0,0,0,0.08)',
+          boxShadow: '0px 4px 16px rgba(0,112,243,0.4)',
         }}
       >
         <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -506,24 +514,24 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
       {mobileOpen && (
         <div className="md:hidden" style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex' }}>
           <div
-            style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)' }}
+            style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)' }}
             onClick={() => setMobileOpen(false)}
           />
           <div style={{
             position: 'relative', width: '280px', height: '100%', display: 'flex', flexDirection: 'column',
             ...styles.sidebar,
-            boxShadow: '0px 8px 16px rgba(0,0,0,0.12)',
+            boxShadow: '0px 8px 32px rgba(0,0,0,0.4)',
           }}>
             <div style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '12px 16px', borderBottom: '1px solid #ebebeb',
+              padding: '12px 16px', borderBottom: '1px solid #1f1f1f',
             }}>
-              <span style={{ fontSize: '14px', fontWeight: 600, color: '#171717', letterSpacing: '-0.28px' }}>
+              <span style={{ fontSize: '14px', fontWeight: 600, color: '#ededed', letterSpacing: '-0.28px' }}>
                 HTTP<span style={{ color: '#0070f3' }}>ilot</span>
               </span>
               <button
                 onClick={() => setMobileOpen(false)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888', display: 'flex' }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#444', display: 'flex' }}
               >
                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -536,7 +544,7 @@ export default function Sidebar({ onSelectRequest }: SidebarProps) {
       )}
 
       {/* Desktop sidebar */}
-      <div className="hidden md:flex" style={{ width: '220px', flexShrink: 0, height: '100%', flexDirection: 'column', ...styles.sidebar }}>
+      <div className="hidden md:flex" style={{ width: '220px', flexShrink: 0, height: '100vh', flexDirection: 'column', position: 'sticky', top: 0, ...styles.sidebar }}>
         {sidebarContent}
       </div>
     </>

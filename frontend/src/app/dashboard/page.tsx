@@ -1,24 +1,26 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
-import Sidebar from '@/components/Sidebar';
-import TopBar from '@/components/TopBar';
-import RequestBuilder from '@/components/RequestBuilder';
-import ResponseViewer from '@/components/ResponseViewer';
-import { ProxyResponse, Request } from '@/types';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import Sidebar from "@/components/Sidebar";
+import TopBar from "@/components/TopBar";
+import RequestBuilder from "@/components/RequestBuilder";
+import ResponseViewer from "@/components/ResponseViewer";
+import { ProxyResponse, Request } from "@/types";
 
 export default function DashboardPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [response, setResponse] = useState<ProxyResponse | null>(null);
-  const [activeEnvironmentId, setActiveEnvironmentId] = useState<string | null>(null);
+  const [activeEnvironmentId, setActiveEnvironmentId] = useState<string | null>(
+    null,
+  );
   const [activeRequest, setActiveRequest] = useState<Request | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/login');
+      router.push("/login");
     }
   }, [user, loading, router]);
 
@@ -33,7 +35,10 @@ export default function DashboardPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#fafafa', color: '#171717' }}>
+    <div
+      className="h-screen flex flex-col"
+      style={{ background: "#0a0a0a", color: "#ededed" }}
+    >
       <TopBar
         activeEnvironmentId={activeEnvironmentId}
         onEnvironmentChange={setActiveEnvironmentId}
@@ -42,6 +47,7 @@ export default function DashboardPage() {
         <Sidebar onSelectRequest={setActiveRequest} />
         <main className="flex-1 flex flex-col overflow-hidden">
           <RequestBuilder
+            key={activeRequest?.id ?? "new"}
             onResponse={setResponse}
             activeEnvironmentId={activeEnvironmentId}
             activeRequest={activeRequest}

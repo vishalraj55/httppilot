@@ -29,8 +29,20 @@ export default function RequestBuilder({
   activeRequest,
 }: Props) {
   const { getToken } = useAuth();
-  const [method, setMethod] = useState("GET");
-  const [url, setUrl] = useState("");
+  const [method, setMethod] = useState(activeRequest?.method ?? "GET");
+const [url, setUrl] = useState(activeRequest?.url ?? "");
+const [headers, setHeaders] = useState<{ key: string; value: string; enabled: boolean }[]>(() => {
+  if (!activeRequest) return [{ key: "", value: "", enabled: true }];
+  const h = activeRequest.headers as Record<string, string>;
+  return [
+    ...Object.entries(h).map(([key, value]) => ({ key, value, enabled: true })),
+    { key: "", value: "", enabled: true },
+  ];
+});
+const [body, setBody] = useState(
+  activeRequest?.body ? JSON.stringify(activeRequest.body, null, 2) : ""
+);
+const [requestName, setRequestName] = useState(activeRequest?.name ?? "");
   const [activeTab, setActiveTab] = useState<
     "headers" | "body" | "auth" | "save"
   >("headers");
@@ -38,36 +50,11 @@ export default function RequestBuilder({
   const [bearerToken, setBearerToken] = useState("");
   const [basicUser, setBasicUser] = useState("");
   const [basicPass, setBasicPass] = useState("");
-  const [headers, setHeaders] = useState<
-    { key: string; value: string; enabled: boolean }[]
-  >([{ key: "", value: "", enabled: true }]);
-  const [body, setBody] = useState("");
   const [loading, setLoading] = useState(false);
   const [collections, setCollections] = useState<any[]>([]);
   const [selectedCollection, setSelectedCollection] = useState("");
-  const [requestName, setRequestName] = useState("");
   const [savedFlash, setSavedFlash] = useState(false);
   const [tabsOpen, setTabsOpen] = useState(true);
-
-  useEffect(() => {
-    if (activeRequest) {
-      setMethod(activeRequest.method);
-      setUrl(activeRequest.url);
-      const h = activeRequest.headers as Record<string, string>;
-      setHeaders([
-        ...Object.entries(h).map(([key, value]) => ({
-          key,
-          value,
-          enabled: true,
-        })),
-        { key: "", value: "", enabled: true },
-      ]);
-      setBody(
-        activeRequest.body ? JSON.stringify(activeRequest.body, null, 2) : "",
-      );
-      setRequestName(activeRequest.name);
-    }
-  }, [activeRequest]);
 
   useEffect(() => {
     const load = async () => {

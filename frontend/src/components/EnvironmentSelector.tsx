@@ -25,9 +25,12 @@ export default function EnvironmentSelector({ activeEnvironmentId, onEnvironment
     setEnvironments(data);
   }, [getToken]);
 
-  useEffect(() => {
-    void loadEnvironments();
-  }, [loadEnvironments]);
+useEffect(() => {
+  const load = async () => {
+    await loadEnvironments();
+  };
+  void load();
+}, [loadEnvironments]);
 
   const openCreate = () => {
     setEditingEnv(null);

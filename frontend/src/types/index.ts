@@ -27,6 +27,8 @@ export interface RequestHistory {
   statusCode: number;
   timeTaken: number;
   createdAt: string;
+  headers?: Record<string, string>;
+  body?: any;
 }
 
 export interface ProxyResponse {
