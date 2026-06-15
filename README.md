@@ -1,4 +1,4 @@
-# HTTPilot ⚡
+# HTTPilot
 
 > A modern, browser-based API testing tool built for developers who want a fast, clean alternative to Postman.
 
@@ -257,7 +257,7 @@ All endpoints require a Firebase JWT `Authorization: Bearer <token>` header.
 
 ## Author
 
-**Vishal Raj**
+**Vishal Rajbhar**
 
 - GitHub: [@vishalraj55](https://github.com/vishalraj55)
 
