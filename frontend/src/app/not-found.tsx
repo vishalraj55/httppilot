@@ -4,17 +4,17 @@ export default function NotFound() {
       <div style={{ textAlign: "center", maxWidth: "360px", padding: "0 24px" }}>
 
         {/* logo */}
-        <div style={{ fontSize: "18px", fontWeight: 600, color: "#ededed", letterSpacing: "-0.5px", marginBottom: "32px" }}>
+        <div style={{ fontSize: "18px", fontWeight: 600, color: "#var(--text-primary)", letterSpacing: "-0.5px", marginBottom: "32px" }}>
           HTTP<span style={{ color: "#0070f3" }}>ilot</span>
         </div>
 
         {/* 404 badge */}
-        <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "3px 10px", borderRadius: "100px", border: "1px solid #1f1f1f", background: "#111", marginBottom: "20px" }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "3px 10px", borderRadius: "100px", border: "1px solid var(--border)", background: "#111", marginBottom: "20px" }}>
           <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#ee0000", display: "inline-block" }} />
           <span style={{ fontSize: "11px", fontWeight: 500, color: "#555", fontFamily: "Geist Mono, ui-monospace, monospace", letterSpacing: "0.06em" }}>404 NOT_FOUND</span>
         </div>
 
-        <h1 style={{ fontSize: "22px", fontWeight: 600, color: "#ededed", letterSpacing: "-0.5px", margin: "0 0 8px" }}>
+        <h1 style={{ fontSize: "22px", fontWeight: 600, color: "#var(--text-primary)", letterSpacing: "-0.5px", margin: "0 0 8px" }}>
           Route not found
         </h1>
 

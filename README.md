@@ -1,8 +1,8 @@
-# HTTPilot ⚡
+# HTTPPilot ⚡
 
 > A modern, browser-based API testing tool built for developers who want a fast, clean alternative to Postman.
 
-![HTTPilot](https://img.shields.io/badge/status-beta-blue?style=flat-square)
+![HTTPPilot](https://img.shields.io/badge/status-beta-blue?style=flat-square)
 ![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)
 ![NestJS](https://img.shields.io/badge/NestJS-11-red?style=flat-square&logo=nestjs)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?style=flat-square&logo=postgresql)
@@ -12,9 +12,25 @@
 
 ## Overview
 
-HTTPilot is a full-stack API testing web application that lets developers send HTTP requests, inspect responses, manage saved request collections, and configure environment variables all from a clean, developer-focused UI.
+HTTPPilot is a full-stack API testing web application that lets developers send HTTP requests, inspect responses, manage saved request collections, and configure environment variables all from a clean, developer-focused UI.
 
 Built to demonstrate full-stack engineering across authentication, proxy architecture, real-time database interactions, and modern UI design.
+
+---
+
+## Screenshots
+
+### Dashboard
+![Dashboard](./assets/screenshots/dashboard.png)
+
+### Environment Variables
+![Environments](./assets/screenshots/environment.png)
+
+### Collections
+![Collections](./assets/screenshots/collections.png)
+
+### Login
+![Login](./assets/screenshots/login.png)
 
 ---
 

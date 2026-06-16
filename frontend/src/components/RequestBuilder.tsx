@@ -6,7 +6,8 @@ import { ProxyResponse, Request, Environment } from "@/types";
 import CodeMirror from "@uiw/react-codemirror";
 import { json } from "@codemirror/lang-json";
 import { oneDark } from "@codemirror/theme-one-dark";
-
+import { EditorView } from "@codemirror/view";
+import { useTheme } from "@/context/ThemeContext";
 interface Props {
   onResponse: (res: ProxyResponse) => void;
   activeEnvironmentId: string | null;
@@ -30,19 +31,21 @@ export default function RequestBuilder({
 }: Props) {
   const { getToken } = useAuth();
   const [method, setMethod] = useState(activeRequest?.method ?? "GET");
-const [url, setUrl] = useState(activeRequest?.url ?? "");
-const [headers, setHeaders] = useState<{ key: string; value: string; enabled: boolean }[]>(() => {
-  if (!activeRequest) return [{ key: "", value: "", enabled: true }];
-  const h = activeRequest.headers as Record<string, string>;
-  return [
+  const [url, setUrl] = useState(activeRequest?.url ?? "");
+  const [headers, setHeaders] = useState<
+    { key: string; value: string; enabled: boolean }[]
+  >(() => {
+    if (!activeRequest) return [{ key: "", value: "", enabled: true }];
+    const h = activeRequest.headers as Record<string, string>;
+    return [
     ...Object.entries(h).map(([key, value]) => ({ key, value, enabled: true })),
-    { key: "", value: "", enabled: true },
-  ];
-});
-const [body, setBody] = useState(
-  activeRequest?.body ? JSON.stringify(activeRequest.body, null, 2) : ""
-);
-const [requestName, setRequestName] = useState(activeRequest?.name ?? "");
+      { key: "", value: "", enabled: true },
+    ];
+  });
+  const [body, setBody] = useState(
+    activeRequest?.body ? JSON.stringify(activeRequest.body, null, 2) : "",
+  );
+  const [requestName, setRequestName] = useState(activeRequest?.name ?? "");
   const [activeTab, setActiveTab] = useState<
     "headers" | "body" | "auth" | "save"
   >("headers");
@@ -55,6 +58,7 @@ const [requestName, setRequestName] = useState(activeRequest?.name ?? "");
   const [selectedCollection, setSelectedCollection] = useState("");
   const [savedFlash, setSavedFlash] = useState(false);
   const [tabsOpen, setTabsOpen] = useState(true);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const load = async () => {
@@ -468,8 +472,31 @@ const [requestName, setRequestName] = useState(activeRequest?.name ?? "");
             <CodeMirror
               value={body}
               height="160px"
-              extensions={[json()]}
-              theme={oneDark}
+              extensions={[
+                json(),
+                theme === "light"
+                  ? EditorView.theme({
+                      "&": {
+                        background: "var(--bg-elevated)",
+                        color: "var(--text-primary)",
+                      },
+                      ".cm-gutters": {
+                        background: "var(--bg-elevated)",
+                        borderRight: "1px solid var(--border)",
+                        color: "var(--text-muted)",
+                      },
+                      ".cm-activeLineGutter": {
+                        background: "var(--bg-elevated)",
+                      },
+                      ".cm-activeLine": { background: "rgba(0,0,0,0.04)" },
+                      ".cm-cursor": { borderLeftColor: "var(--text-primary)" },
+                      ".cm-selectionBackground": {
+                        background: "rgba(0,112,243,0.15)",
+                      },
+                    })
+                  : EditorView.theme({}),
+              ]}
+              theme={theme === "dark" ? oneDark : ("none" as any)}
               onChange={(val) => setBody(val)}
               className="text-xs"
             />
