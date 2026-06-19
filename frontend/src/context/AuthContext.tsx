@@ -25,9 +25,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       setLoading(false);
+
+      if (user) {
+        try {
+          const token = await user.getIdToken();
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+        } catch (err) {
+          console.error('Failed to sync user with backend:', err);
+        }
+      }
     });
     return unsubscribe;
   }, []);
