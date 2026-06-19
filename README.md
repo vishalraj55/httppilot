@@ -1,4 +1,4 @@
-# HTTPPilot ⚡
+# HTTPPilot 
 
 > A modern, browser-based API testing tool built for developers who want a fast, clean alternative to Postman.
 
