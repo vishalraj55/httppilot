@@ -40,6 +40,9 @@ const getStatusStyle = (code: number) => {
 export default function ResponseViewer({ response }: Props) {
   const [activeTab, setActiveTab] = useState<"body" | "headers">("body");
   const [copied, setCopied] = useState(false);
+  const [copiedHeader, setCopiedHeader] = useState<string | null>(null);
+  const [headerFilter, setHeaderFilter] = useState("");
+  const [wrap, setWrap] = useState(false);
   const { theme } = useTheme();
 
   const copyResponse = async () => {
@@ -47,6 +50,12 @@ export default function ResponseViewer({ response }: Props) {
     await navigator.clipboard.writeText(JSON.stringify(response.data, null, 2));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const copyHeader = async (key: string, value: string) => {
+    await navigator.clipboard.writeText(`${key}: ${value}`);
+    setCopiedHeader(key);
+    setTimeout(() => setCopiedHeader(null), 1500);
   };
 
   if (!response) {
@@ -122,6 +131,13 @@ export default function ResponseViewer({ response }: Props) {
       ? response.data
       : JSON.stringify(response.data, null, 2);
 
+  const filteredHeaders = Object.entries(response.headers).filter(
+    ([key, value]) =>
+      !headerFilter ||
+      key.toLowerCase().includes(headerFilter.toLowerCase()) ||
+      String(value).toLowerCase().includes(headerFilter.toLowerCase()),
+  );
+
   return (
     <div
       className="flex-1 flex flex-col overflow-hidden"
@@ -154,36 +170,52 @@ export default function ResponseViewer({ response }: Props) {
           </span>
         </div>
 
-        <button
-          onClick={() => void copyResponse()}
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded text-xs transition"
-          style={{
-            color: copied ? "#22c55e" : "var(--text-secondary)",
-            border: "1px solid var(--border)",
-            background: "var(--bg-elevated)",
-          }}
-        >
-          {copied ? (
-            <>✓ Copied</>
-          ) : (
-            <>
-              <svg
-                className="w-3 h-3"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                />
-              </svg>
-              Copy
-            </>
+        <div className="flex items-center gap-1.5">
+          {activeTab === "body" && (
+            <button
+              onClick={() => setWrap((w) => !w)}
+              className="px-2.5 py-1 rounded text-xs transition"
+              style={{
+                color: wrap ? "var(--accent)" : "var(--text-secondary)",
+                border: "1px solid var(--border)",
+                background: "var(--bg-elevated)",
+              }}
+              title="Toggle line wrap"
+            >
+              Wrap
+            </button>
           )}
-        </button>
+          <button
+            onClick={() => void copyResponse()}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded text-xs transition"
+            style={{
+              color: copied ? "#22c55e" : "var(--text-secondary)",
+              border: "1px solid var(--border)",
+              background: "var(--bg-elevated)",
+            }}
+          >
+            {copied ? (
+              <>✓ Copied</>
+            ) : (
+              <>
+                <svg
+                  className="w-3 h-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                </svg>
+                Copy
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -224,13 +256,14 @@ export default function ResponseViewer({ response }: Props) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto flex flex-col">
         {activeTab === "body" && (
           <CodeMirror
             value={bodyString}
             height="100%"
             extensions={[
               json(),
+              EditorView.lineWrapping,
               theme === "light"
                 ? EditorView.theme({
                     "&": {
@@ -250,8 +283,11 @@ export default function ResponseViewer({ response }: Props) {
                     ".cm-selectionBackground": {
                       background: "rgba(0,112,243,0.15)",
                     },
+                    ".cm-content": { whiteSpace: wrap ? "pre-wrap" : "pre" },
                   })
-                : EditorView.theme({}),
+                : EditorView.theme({
+                    ".cm-content": { whiteSpace: wrap ? "pre-wrap" : "pre" },
+                  }),
             ]}
             theme={theme === "dark" ? oneDark : ("none" as any)}
             editable={false}
@@ -260,25 +296,71 @@ export default function ResponseViewer({ response }: Props) {
         )}
 
         {activeTab === "headers" && (
-          <div className="p-3 space-y-0.5">
-            {Object.entries(response.headers).map(([key, value]) => (
-              <div
-                key={key}
-                className="flex gap-4 py-1.5 text-xs"
-                style={{ borderBottom: "1px solid var(--border-subtle)" }}
-              >
-                <span
-                  className="w-48 shrink-0 font-mono"
-                  style={{ color: "var(--accent)" }}
+          <>
+            <div
+              className="px-3 py-2 shrink-0"
+              style={{
+                borderBottom: "1px solid var(--border-subtle)",
+                background: "var(--bg-base)",
+              }}
+            >
+              <input
+                value={headerFilter}
+                onChange={(e) => setHeaderFilter(e.target.value)}
+                placeholder="Filter headers..."
+                className="w-full text-xs px-2.5 py-1.5 rounded outline-none"
+                style={{
+                  background: "var(--bg-elevated)",
+                  border: "1px solid var(--border)",
+                  color: "var(--text-primary)",
+                }}
+              />
+            </div>
+
+            <div className="p-3 space-y-0.5">
+              {filteredHeaders.map(([key, value]) => (
+                <div
+                  key={key}
+                  className="group flex gap-4 py-1.5 text-xs items-start"
+                  style={{ borderBottom: "1px solid var(--border-subtle)" }}
                 >
-                  {key}
-                </span>
-                <span style={{ color: "var(--text-secondary)" }}>
-                  {value as string}
-                </span>
-              </div>
-            ))}
-          </div>
+                  <span
+                    className="w-48 shrink-0 font-mono"
+                    style={{ color: "var(--accent)" }}
+                  >
+                    {key}
+                  </span>
+                  <span
+                    className="flex-1 break-all font-mono"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
+                    {value as string}
+                  </span>
+                  <button
+                    onClick={() => void copyHeader(key, value as string)}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 text-[11px]"
+                    style={{
+                      color:
+                        copiedHeader === key ? "#22c55e" : "var(--text-muted)",
+                    }}
+                  >
+                    {copiedHeader === key ? "✓" : "copy"}
+                  </button>
+                </div>
+              ))}
+
+              {filteredHeaders.length === 0 && (
+                <p
+                  className="text-xs py-4"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  {Object.keys(response.headers).length === 0
+                    ? "No headers returned."
+                    : "No headers match your filter."}
+                </p>
+              )}
+            </div>
+          </>
         )}
       </div>
     </div>
