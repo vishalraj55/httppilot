@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
+import Image from "next/image";
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -62,22 +63,14 @@ export default function LoginPage() {
         alignItems: 'center',
         padding: '0 24px',
         flexShrink: 0,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{
-            width: '22px', height: '22px', borderRadius: '6px',
-            background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="white">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
-                d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Image src="/logo1.png" alt="HTTPilot" width={22} height={22} />
+            <span style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.3px' }}>
+              HTTP<span style={{ color: 'var(--accent)' }}>Pilot</span>
+            </span>
           </div>
-          <span style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.3px' }}>
-            HTTP<span style={{ color: 'var(--accent)' }}>Pilot</span>
-          </span>
-        </div>
-      </nav>
+        </nav>
 
       {/* Main */}
       <div style={{
